@@ -49,12 +49,16 @@ public class Main {
         Comand ret= new Comand();
         //ret.comNumber=-1;
         s1 = s1.trim();
-        s1 = s1.replace("\s"," ");
-        s1= s1.replace("\n"," ");
-        s1 = s1.replace("\r"," ");
+        s1 = s1.replace("\s","\s");
+        s1= s1.replace("\n","\s");
+        s1 = s1.replace("\r","\s");
         s1 = s1.replace(";","");
-        s1 = s1.replace(",\s",",");
+
         s1 = s1.replaceAll("( )+"," ");
+        s1 = s1.replace(", ",",");
+        s1 = s1.replace(" ,",",");
+        s1 = s1.replace("[ ","[");
+        s1 = s1.replace(" ]","]");
         String []str = s1.split(" ");
         if(s1.matches("[.][eE][Xx][Ii][Tt]")){
             ret.error=true;
@@ -178,7 +182,7 @@ public class Main {
                 ret.argName=s;
                 //return ret;
             }
-            else if(str[4].matches("[0]|[-]?[0-9]*")){
+            else if(str[4].matches("[0]|[-]?[1-9][0-9]*")){
                 if(str[3].matches(C53)){
                     ret.comNumber=53;
                     String s = str[4].replace("[","");
@@ -397,7 +401,7 @@ public class Main {
         }
         if(tree.left!=null){
             if(tree.right == null){
-            PrintTree(tree.left,i+1,1);}
+            PrintTree(tree.left,i+1,0);}// end = 1 to produce more accurate view, but left-right can be unrecognized;
             else{
                 PrintTree(tree.left,i+1,0);
             }
@@ -423,7 +427,7 @@ public class Main {
             return c;
         }
         if(tree.node.bLeft.compareTo(l)==0){
-            if(tree.node.bRight==r){
+            if(tree.node.bRight.compareTo(r)==0){
                 c = true;
                 return c;
             }
@@ -462,14 +466,14 @@ public class Main {
         //int r = Integer.parseInt(bnds.split(",")[1]);
         BigInteger l= new BigInteger(bnds.split(",")[0]);
         BigInteger r = new BigInteger(bnds.split(",")[1]);
-        if(tree.node.bLeft.compareTo(l)==1){
+        if(tree.node.bLeft.compareTo(r)==1){
             if(tree.left!=null){
                 ContainIntersect(tree.left,bnds);
             }
             return;
         }
         boolean ss = tree.node.bLeft.compareTo(l)==0;
-        if(tree.node.bLeft.compareTo(l)==0||tree.node.bLeft.compareTo(l)==-1){
+        if(tree.node.bLeft.compareTo(r)==0||tree.node.bLeft.compareTo(r)==-1){
             if(((tree.node.bLeft.compareTo(l)==0||tree.node.bLeft.compareTo(l)==1)
                     &&(tree.node.bLeft.compareTo(r)==0||tree.node.bLeft.compareTo(r)==-1))
 
