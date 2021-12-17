@@ -1,6 +1,5 @@
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -17,11 +16,7 @@ public class Main {
         ArrayList<Base> base = new ArrayList<Base>();
         String res="";
         Scanner in = new Scanner(System.in);
-        boolean check=true;
-        //Comand c = ParseCommand("search f where riGHt_oF [155,5];");
-        //System.out.println(!"01".matches("[0]|[1-9][0-9]*")||!"5".matches("[0]|[1-9][0-9]*"));
-        //System.out.println(c.name+" "+c.comNumber+" "+c.argName);
-        while(check){
+        while(true){
             System.out.println("");
             System.out.println("Enter line:");
             String sRead = res;
@@ -31,7 +26,6 @@ public class Main {
             res = sarr[sarr.length-1];
             for(int i=0;i<sarr.length-1;i++){
                 Comand c = ParseCommand(sarr[i]);
-                //System.out.println(c.name+" "+c.comNumber+" "+c.argName);
                 if(c.comNumber==0){
                     return;
                 }
@@ -40,7 +34,6 @@ public class Main {
                 if(c.error){
                     System.out.println("In expression: \""+sarr[i]+";\""+" Error: "+c.name);
                 }
-                //System.out.println(c.name+" "+c.comNumber+" "+c.argName);
             }
         }
 
@@ -55,10 +48,12 @@ public class Main {
         s1 = s1.replace(";","");
 
         s1 = s1.replaceAll("( )+"," ");
+
         s1 = s1.replace(", ",",");
         s1 = s1.replace(" ,",",");
         s1 = s1.replace("[ ","[");
         s1 = s1.replace(" ]","]");
+
         String []str = s1.split(" ");
         if(s1.matches("[.][eE][Xx][Ii][Tt]")){
             ret.error=true;
@@ -67,10 +62,11 @@ public class Main {
         }
         if(str.length!=2&&str.length!=3&&str.length!=5){
             ret.error=true;
-            ret.name = "unknown command!";
+            ret.name = "is not a command!";
             return ret;
         }
         else if(str.length==2){
+            // create ghj;
             if(str[0].matches(C1)){
                 if(str[1].matches("[a-zA-Z][a-zA-Z0-9_]*")){
                     ret.comNumber=1;
@@ -107,6 +103,7 @@ public class Main {
                 return ret;
             }
         }
+
         else if(str.length==3){
             if(str[2].matches("[\\[][-]?[0-9]*[,][-]?[0-9]*[\\]]")){
                 String s = str[2].replace("[","");
@@ -117,9 +114,9 @@ public class Main {
                     ret.name="bad argument values!";
                     return ret;
                 }
-                int a =Integer.parseInt( as[0]);
-                int b = Integer.parseInt(as[1]);
-                if(a>b){
+                BigInteger a =new BigInteger( as[0]);
+                BigInteger b =new BigInteger(as[1]);
+                if(a.compareTo(b)==1){
                     ret.error=true;
                     ret.name="left bound greater than right!";
                     return ret;
@@ -181,13 +178,13 @@ public class Main {
                 }
                 ret.argName=s;
                 //return ret;
+
             }
             else if(str[4].matches("[0]|[-]?[1-9][0-9]*")){
                 if(str[3].matches(C53)){
                     ret.comNumber=53;
-                    String s = str[4].replace("[","");
-                    s = s.replace("]","");
-                    ret.argName=s;
+
+                    ret.argName=str[4];
                     if(str[1].matches("[a-zA-Z][a-zA-Z0-9_]*")){
                         ret.name=str[1];
                     }else{
@@ -226,10 +223,10 @@ public class Main {
                         ret.comNumber=52;
 
                     }
-                    else if(str[3].matches(C53)){
-                        ret.comNumber=53;
+                    //else if(str[3].matches(C53)){
+                      //  ret.comNumber=53;
 
-                    }
+                    //}
                 }
                 return ret;
             }
@@ -247,11 +244,11 @@ public class Main {
     }
 
     public static void ExecuteCommand(ArrayList<Base> lst,Comand comand){
-        //System.out.println(lst.toArray().length);
+
         if(comand.comNumber==1){
-            //System.out.println(" ");
+
             for(int i=0;i<lst.toArray().length;i++){
-                //System.out.println(lst.get(i).s1);
+
                 if(comand.name.equals(lst.get(i).s1)){
                     System.out.println(comand.name+" already exist!");
                     return;
@@ -279,7 +276,7 @@ public class Main {
             }
             AddSection(lst.get(check).tree,comand.argName);
             System.out.println("["+comand.argName+"]"+" added to "+lst.get(check).s1+"!");
-            //
+
         }
         if(comand.comNumber==3||comand.comNumber==50){
             int check=-1;
@@ -322,10 +319,10 @@ public class Main {
                 System.out.println(comand.name+" does not exist!");
                 return;
             }
-            //boolean cont=false;
+
             System.out.println("In "+comand.name+" contains in boundaries ["+comand.argName+"] next sections:");
             ContainBy(lst.get(check).tree,comand.argName);
-            //System.out.println(cont);
+
         }
         if(comand.comNumber==52){
             int check=-1;
@@ -338,10 +335,10 @@ public class Main {
                 System.out.println(comand.name+" does not exist!");
                 return;
             }
-            //boolean cont=false;
+
             System.out.println("In "+comand.name+" contains intersected with ["+comand.argName+"] next sections:");
             ContainIntersect(lst.get(check).tree,comand.argName);
-            //System.out.println(cont);
+
         }
         if(comand.comNumber==53){
             int check=-1;
@@ -354,10 +351,10 @@ public class Main {
                 System.out.println(comand.name+" does not exist!");
                 return;
             }
-            //boolean cont=false;
+
             System.out.println("In "+comand.name+" contains further right then "+comand.argName+" next sections:");
             ContainRight(lst.get(check).tree,comand.argName);
-            //System.out.println(cont);
+
         }
     }
     public static void AddSection(KDTree tree,String bnds){
@@ -384,12 +381,13 @@ public class Main {
             }
         }
     }
+
     public static void PrintTree(KDTree tree,int i,int end){
-        int ib = i;
+
         if(i!=0) {
             System.out.println("");
 
-            for (int j = 0; j < ib; j++) {
+            for (int j = 0; j < i; j++) {
                 System.out.print(" ");
             }
             if(end==1) System.out.print("\u2514");
@@ -400,11 +398,7 @@ public class Main {
             System.out.print("[" + tree.node.bLeft + "," + tree.node.bRight + "]");
         }
         if(tree.left!=null){
-            if(tree.right == null){
-            PrintTree(tree.left,i+1,0);}// end = 1 to produce more accurate view, but left-right can be unrecognized;
-            else{
-                PrintTree(tree.left,i+1,0);
-            }
+            PrintTree(tree.left,i+1,0);// end = 1 to produce more accurate view, but left-right can be unrecognized;
         }
         if(tree.right!=null){
             PrintTree(tree.right,i+1,1);
@@ -447,6 +441,7 @@ public class Main {
             }
             return;
         }
+
         if((tree.node.bLeft.compareTo(l)==0||tree.node.bLeft.compareTo(l)==1)
                 &&(tree.node.bLeft.compareTo(r)==0||tree.node.bLeft.compareTo(r)==-1)){
             if(tree.node.bRight.compareTo(r)==0||tree.node.bRight.compareTo(r)==-1){
@@ -459,11 +454,15 @@ public class Main {
                 ContainBy(tree.left,bnds);
             }
         }
+        else{
+            if(tree.left!=null){
+                ContainBy(tree.left,bnds);
+            }
+        }
         return;
     }
     public  static  void ContainIntersect(KDTree tree,String bnds){
-        //int l = Integer.parseInt(bnds.split(",")[0]);
-        //int r = Integer.parseInt(bnds.split(",")[1]);
+
         BigInteger l= new BigInteger(bnds.split(",")[0]);
         BigInteger r = new BigInteger(bnds.split(",")[1]);
         if(tree.node.bLeft.compareTo(r)==1){
@@ -472,12 +471,13 @@ public class Main {
             }
             return;
         }
-        boolean ss = tree.node.bLeft.compareTo(l)==0;
+
+
         if(tree.node.bLeft.compareTo(r)==0||tree.node.bLeft.compareTo(r)==-1){
             if(((tree.node.bLeft.compareTo(l)==0||tree.node.bLeft.compareTo(l)==1)
                     &&(tree.node.bLeft.compareTo(r)==0||tree.node.bLeft.compareTo(r)==-1))
-
-                    ||((tree.node.bRight.compareTo(l)==0||tree.node.bRight.compareTo(l)==1)
+                    ||
+                    ((tree.node.bRight.compareTo(l)==0||tree.node.bRight.compareTo(l)==1)
                     &&(tree.node.bRight.compareTo(r)==0||tree.node.bRight.compareTo(r)==-1))){
                 System.out.println("["+tree.node.bLeft+","+tree.node.bRight+"]");
             }
@@ -489,11 +489,16 @@ public class Main {
             }
 
         }
+        else{
+            if(tree.right!=null){
+                ContainIntersect(tree.right,bnds);
+            }
+        }
 
     }
     public static void  ContainRight(KDTree tree,String bnds){
         BigInteger l = new BigInteger(bnds);
-        //int r = Integer.parseInt(bnds.split(",")[1]);
+
         if(tree.node.bLeft.compareTo(l)==1||tree.node.bLeft.compareTo(l)==0){
             System.out.println("["+tree.node.bLeft+","+tree.node.bRight+"]");
             if(tree.right!=null){
